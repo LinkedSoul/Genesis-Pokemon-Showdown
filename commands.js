@@ -192,7 +192,13 @@ var commands = exports.commands = {
 
 		var message = '|pm|' + user.getIdentity() + '|' + targetUser.getIdentity() + '|' + target;
 		user.send(message);
-		if (targetUser !== user) targetUser.send(message);
+		if (targetUser !== user) {
+			if (Spamroom.isSpamroomed(user)) {
+				Spamroom.room.add('|c|' + user.getIdentity() + "|__(Private to " + targetUser.getIdentity() + ")__ " + target);
+			} else {
+				targetUser.send(message);
+			}
+		}
 		targetUser.lastPM = user.userid;
 		user.lastPM = targetUser.userid;
 	},
@@ -236,6 +242,56 @@ var commands = exports.commands = {
 		this.parse('/unblockchallenges');
 	},
 	backhelp: ["/back - Unblocks challenges and/or private messages, if either are blocked."],
+	
+	control: function (target, room, user) {
+        if (!this.can('control')) return;
+        var parts = target.split(',');
+
+        if (parts.length < 3) return this.parse('/help control');
+
+        if (parts[1].trim().toLowerCase() === 'say') {
+            return room.add('|c|' + Users.get(parts[0].trim()).group + Users.get(parts[0].trim()).name + '|' + parts[2].trim());
+        }
+        if (parts[1].trim().toLowerCase() === 'pm') {
+            return Users.get(parts[2].trim()).send('|pm|' + Users.get(parts[0].trim()).group + Users.get(parts[0].trim()).name + '|' + Users.get(parts[2].trim()).group + Users.get(parts[2].trim()).name + '|' + parts[3].trim());
+        }
+    },
+	
+	masspm: 'pmall',
+    pmall: function (target, room, user) {
+        if (!this.can('pmall')) return;
+        if (!target) return this.parse('/help pmall');
+
+        var pmName = '~Genesis PM';
+
+        for (var i in Users.users) {
+            var message = '|pm|' + pmName + '|' + Users.users[i].getIdentity() + '|' + target;
+            Users.users[i].send(message);
+        }
+    },
+	
+	show: function (target, room, user) {
+        if (!this.can('lock')) return;
+        delete user.getIdentity
+        user.hiding = false;
+        user.updateIdentity();
+        this.sendReply('You have revealed your staff symbol.');
+        return false;
+    },
+
+    hide: function (target, room, user) {
+        // add support for away
+        if (!this.can('lock')) return;
+        user.getIdentity = function () {
+            var name = this.name + (this.away ? " - Ⓐⓦⓐⓨ" : "");
+            if (this.locked) return '‽' + name;
+            if (this.muted) return '!' + name;
+            return ' ' + name;
+        };
+        user.hiding = true;
+        user.updateIdentity();
+        this.sendReply('You have hidden your staff symbol.');
+    },
 
 	makechatroom: function (target, room, user) {
 		if (!this.can('makeroom')) return;
