@@ -1262,18 +1262,79 @@ var commands = exports.commands = {
 		this.add('|raw|<div class="broadcast-blue"><b>' + target + '</b></div>');
 		this.logModCommand(user.name + " declared " + target);
 	},
+	
+	gdeclarered: 'gdeclare',
+    gdeclaregreen: 'gdeclare',
+    gdeclare: function(target, room, user, connection, cmd) {
+        if (!target) return this.parse('/help gdeclare');
+        if (!this.can('lockdown')) return false;
 
-	gdeclare: 'globaldeclare',
-	globaldeclare: function (target, room, user) {
-		if (!target) return this.parse('/help globaldeclare');
-		if (!this.can('gdeclare')) return false;
+        var roomName = (room.isPrivate) ? 'a private room' : room.id;
 
-		for (var id in Rooms.rooms) {
-			if (id !== 'global') Rooms.rooms[id].addRaw('<div class="broadcast-blue"><b>' + target + '</b></div>');
-		}
-		this.logModCommand(user.name + " globally declared " + target);
-	},
-	globaldeclarehelp: ["/globaldeclare [message] - Anonymously announces a message to every room on the server. Requires: ~"],
+        if (cmd === 'gdeclare') {
+            for (var id in Rooms.rooms) {
+                if (id !== 'global') Rooms.rooms[id].addRaw('<div class="broadcast-blue"><b><font size=1><i>Declaración global de ' + user.name + '<br /></i></font size>' + target + '</b></div>');
+            }
+        }
+        if (cmd === 'gdeclarered') {
+            for (var id in Rooms.rooms) {
+                if (id !== 'global') Rooms.rooms[id].addRaw('<div class="broadcast-red"><b><font size=1><i>Declaración global de ' + user.name + '<br /></i></font size>' + target + '</b></div>');
+            }
+        } else if (cmd === 'gdeclaregreen') {
+            for (var id in Rooms.rooms) {
+                if (id !== 'global') Rooms.rooms[id].addRaw('<div class="broadcast-green"><b><font size=1><i>Declaración global de ' + user.name + '<br /></i></font size>' + target + '</b></div>');
+            }
+        }
+        this.logEntry(user.name + ' used /gdeclare');
+
+    },
+
+    declaregreen: 'declarered',
+    declarered: function(target, room, user, connection, cmd) {
+        if (!target) return this.parse('/help declare');
+        if (!this.can('declare', null, room)) return false;
+
+        if (!this.canTalk()) return;
+
+        if (cmd === 'declarered') {
+            this.add('|raw|<div class="broadcast-red"><b>' + target + '</b></div>');
+        } else if (cmd === 'declaregreen') {
+            this.add('|raw|<div class="broadcast-green"><b>' + target + '</b></div>');
+        }
+        this.logModCommand(user.name + ' declared ' + target);
+    },
+
+    declaregreen: 'declarered',
+    declarered: function(target, room, user, connection, cmd) {
+        if (!target) return this.parse('/help declare');
+        if (!this.can('declare', null, room)) return false;
+
+        if (!this.canTalk()) return;
+
+        if (cmd === 'declarered') {
+            this.add('|raw|<div class="broadcast-red"><b>' + target + '</b></div>');
+        } else if (cmd === 'declaregreen') {
+            this.add('|raw|<div class="broadcast-green"><b>' + target + '</b></div>');
+        }
+        this.logModCommand(user.name + ' declared ' + target);
+    },
+
+    golddeclare: function(target, room, user, connection, cmd) {
+        if (!target) return this.parse('/help declare');
+        if (!this.can('declare', null, room)) return false;
+        if (!this.canTalk()) return;
+        this.add('|raw|<div class="broadcast-gold"><b>' + target + '</b></div>');
+        this.logModCommand(user.name + ' declared ' + target);
+    },
+
+    blackdeclare: function(target, room, user, connection, cmd) {
+        if (!target) return this.parse('/help declare');
+        if (!this.can('declare', null, room)) return false;
+        if (!this.canTalk()) return;
+        this.add('|raw|<div class="broadcast-black"><b>' + target + '</b></div>');
+        this.logModCommand(user.name + ' declared ' + target);
+    },
+
 
 	cdeclare: 'chatdeclare',
 	chatdeclare: function (target, room, user) {
