@@ -60,12 +60,11 @@ if (!botBannedWords.links) {
 }
 
 var config = {
-	name: 'LumenBoTTT',
+	name: 'Genesis Bot',
 	userid: function () {
 		return toId(this.name);
 	},
-	group: '#',
-	customavatars: 'bot.gif',
+	group: '&',
 	rooms: ['casino'],
 	punishvals: {
 		1: 'warn',
