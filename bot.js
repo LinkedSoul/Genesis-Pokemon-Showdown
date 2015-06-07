@@ -30,7 +30,7 @@ function writeBotData() {
 } 
  
 var config = {
-    name: 'Oblivion Bot',
+    name: 'Genesis Bot',
     userid: function () {
         return toId(this.name);
     },
